@@ -1,0 +1,125 @@
+services:
+  microtest1:
+    image: "imad910/microtest1:v11"
+    container_name: microtest-ms
+    ports:
+      - "8080:8080"
+    depends_on:
+      configServer:
+        condition: service_healthy
+      eurekaServer:
+        condition: service_healthy
+
+    healthcheck:
+      test: "curl --fail --silent localhost:8080/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    environment:
+      SPRING_APPLICATION_NAME: microtest1
+      SPRING_PROFILES_ACTIVE: default
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaServer:8070/eureka/
+      SPRING_CONFIG_IMPORT: configserver:http://configServer:8071/
+      SPRING_RABBITMQ_HOST: "rabbit"
+
+    networks:
+      - IMMO
+
+
+  microtest2:
+    image: "imad910/microtest2:v11"
+    container_name: microtest2-ms
+    ports:
+      - "8081:8081"
+    healthcheck:
+      test: "curl --fail --silent localhost:8081/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+    environment:
+      SPRING_APPLICATION_NAME: microtest2
+      SPRING_PROFILES_ACTIVE: default
+      SPRING_CONFIG_IMPORT: configserver:http://configServer:8071/
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE : http://eurekaServer:8070/eureka/
+      SPRING_RABBITMQ_HOST: "rabbit"
+    depends_on:
+      configServer:
+        condition: service_healthy
+      eurekaServer:
+        condition: service_healthy
+
+    networks:
+      - IMMO
+
+  configServer:
+    image: "imad910/configserver:v11"
+    container_name: configServer-ms
+    ports:
+      - "8071:8071"
+
+    healthcheck:
+      test: "curl --fail --silent localhost:8071/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    networks:
+      - IMMO
+
+
+  eurekaServer:
+    image: "imad910/eurekaserver:v11"
+    container_name: eurekaserver-ms
+    ports:
+      - "8070:8070"
+    depends_on:
+      configServer:
+        condition: service_healthy
+
+    healthcheck:
+      test: "curl --fail --silent localhost:8070/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    environment:
+      SPRING_CONFIG_IMPORT: configserver:http://configServer:8071/
+    networks:
+      - IMMO
+
+  gatewayserver:
+    image: "imad910/gatewayserver:v11"
+    container_name: gatewayserver-ms
+    ports:
+      - "8072:8072"
+    depends_on:
+      microtest1:
+        condition: service_healthy
+      microtest2:
+        condition: service_healthy
+
+
+    environment:
+      SPRING_APPLICATION_NAME: "gatewayserver"
+      SPRING_CONFIG_IMPORT: configserver:http://configServer:8071/
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE : http://eurekaServer:8070/eureka/
+
+
+    networks:
+      - IMMO
+
+
+
+
+
+
+
+
+
+
+networks:
+  IMMO  :
+    driver: "bridge"

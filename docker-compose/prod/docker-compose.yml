@@ -1,0 +1,72 @@
+services:
+  accounts:
+    image: "imad910/accounts:v7"
+    container_name: accounts-ms
+    ports:
+      - "8080:8080"
+
+    environment:
+      SPRING_APPLICATION_NAME: accounts
+    extends:
+      file: common-config.yml
+      service: microservice-configserver-config
+
+
+  loans:
+    image: "imad910/loans:v7"
+    container_name: loans-ms
+    ports:
+      - "8081:8081"
+    environment:
+      SPRING_APPLICATION_NAME: loans
+      SPRING_RABBITMQ_HOST: "rabbit"
+      SPRING_PROFILES_ACTIVE: default
+      SPRING_CONFIG_IMPORT: configserver:http://configServer:8071/
+    depends_on:
+      configServer:
+        condition: service_healthy
+    networks:
+      - BANK
+
+  configServer:
+    image: "imad910/configserver:v7"
+    container_name: configServer
+    ports:
+      - "8071:8071"
+    depends_on:
+      rabbit:
+        condition: service_healthy
+
+    healthcheck:
+      test: "curl --fail --silent localhost:8071/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    extends:
+      file: common-config.yml
+      service: microservice-base-config
+
+  rabbit:
+    image: rabbitmq:3.13.2-management
+    hostname: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: rabbitmq-diagnostics check_port_connectivity
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+    deploy:
+      resources:
+        limits:
+          memory: 500m
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
+
+networks:
+  BANK  :
+    driver: "bridge"
