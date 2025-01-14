@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: "enrollmentService"
+  profiles:
+    active: "default"
+  config:
+    import: "optional:configserver:http://localhost:8071/"
+
+
+  rabbitmq:
+    host: "localhost"
+    port: 5672
+    username: "guest"
+    password: "guest"
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    shutdown:
+      enabled: true
+    health:
+      probes:
+        enabled: true
+  info:
+    env:
+      enabled: true
+  health:
+    liveness-state:
+    enabled: true
+    readiness-state:
+      enabled: true
+
+endpoints :
+  shutdown :
+    enabled : true
