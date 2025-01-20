@@ -1,4 +1,5 @@
 package com.micro.studentService.services;
+import com.micro.studentService.DTO.StudentDetailsDTO;
 import com.micro.studentService.DTO.StudentInDTO;
 import com.micro.studentService.enteties.Student;
 import com.micro.studentService.exceptions.notFoundException;
@@ -10,7 +11,7 @@ public interface IStudentService {
 
     Student addStudent(StudentInDTO studentInDTO) throws studentExists;
     List<Student> getAllStudents();
-    Student getStudentByMatricule(String matricule) throws notFoundException;
+    StudentDetailsDTO getStudentByMatricule(String matricule) throws notFoundException;
     Student updateStudent(String matricule, StudentInDTO studentInDTO) throws notFoundException;
     void deleteStudent(String matricule) throws notFoundException;
 

@@ -127,15 +127,23 @@ public class TeacherServiceImpl implements ITeacherService {
 
     @Override
     public void deleteTeacher(String TCode)  {
+        // Fetch the teacher
         Teacher teacher = teacherRepository.findByTCode(TCode)
                 .orElseThrow(() -> new notFoundException("Teacher not found with TCode: " + TCode));
 
+        // Cancel all module assignments for the teacher
+        ResponseEntity<Void> cancelResponse = moduleServiceClient.cancelAssign(TCode);
+        if (!cancelResponse.getStatusCode().is2xxSuccessful()) {
+            throw new RuntimeException("Failed to cancel module assignments for teacher: " + TCode);
+        }
 
-        ResponseEntity<Void> response = authServiceClient.deleteUser(TCode);
-
-        if (response.getStatusCode() != HttpStatus.CREATED) {
+        // Delete the teacher from the Auth Service
+        ResponseEntity<Void> authResponse = authServiceClient.deleteUser(TCode);
+        if (authResponse.getStatusCode() != HttpStatus.CREATED) {
             throw new RuntimeException("Failed to delete user in Auth Service");
         }
+
+        // Delete the teacher from the Teacher Service
         teacherRepository.delete(teacher);
     }
 

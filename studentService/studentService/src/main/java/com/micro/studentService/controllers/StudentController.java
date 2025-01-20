@@ -1,6 +1,7 @@
 package com.micro.studentService.controllers;
 
 
+import com.micro.studentService.DTO.StudentDetailsDTO;
 import com.micro.studentService.DTO.StudentInDTO;
 import com.micro.studentService.enteties.Student;
 import com.micro.studentService.exceptions.notFoundException;
@@ -57,8 +58,8 @@ public class StudentController {
 
     // Get a student by matricule
     @GetMapping("/{matricule}")
-    public ResponseEntity<Student> getStudentByMatricule(@PathVariable String matricule) {
-        Student student = studentService.getStudentByMatricule(matricule);
+    public ResponseEntity<StudentDetailsDTO> getStudentByMatricule(@PathVariable String matricule) {
+        StudentDetailsDTO  student = studentService.getStudentByMatricule(matricule);
         return ResponseEntity.ok(student);
     }
 

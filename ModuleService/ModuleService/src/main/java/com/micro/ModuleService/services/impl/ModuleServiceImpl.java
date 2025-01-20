@@ -16,6 +16,7 @@ import com.micro.ModuleService.entities.Module;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -148,9 +149,46 @@ public ModuleOutDTO getModuleByCode(String Code) {
     }
 
     public void cancelAssign(String TCODE) {
-       Module m =  this.moduleRepository.findByCode(TCODE).orElseThrow(() -> new notFoundException("Teacher not found with ID: " + TCODE));
-       m.setTeacherId(null);
+        // Find all modules assigned to the teacher
+        Optional<List<Module>> optionalModules = moduleRepository.findByTeacherId(TCODE);
+
+        // If modules are found, unassign the teacher from them
+        if (optionalModules.isPresent()) {
+            List<Module> modules = optionalModules.get();
+            if (!modules.isEmpty()) {
+                for (Module module : modules) {
+                    module.setTeacherId(null); // Unassign the teacher
+                    moduleRepository.save(module); // Save the updated module
+                }
+            }
+        }
     }
+
+    public List<ModuleOutDTO> getModulesByCodes(List<String> moduleCodes) {
+        List<ModuleOutDTO> moduleOutDTOs = new ArrayList<>();
+
+        for (String code : moduleCodes) {
+            Module module = moduleRepository.findByCode(code)
+                    .orElseThrow(() -> new notFoundException("Module not found with code: " + code));
+
+            Teacher teacher = null;
+            if (module.getTeacherId() != null) {
+                teacher = this.getTeacherByTCode(module.getTeacherId());
+            }
+
+            ModuleOutDTO moduleOutDTO = ModuleOutDTO.builder()
+                    .code(module.getCode())
+                    .name(module.getName())
+                    .description(module.getDescription())
+                    .teacher(teacher)
+                    .build();
+
+            moduleOutDTOs.add(moduleOutDTO);
+        }
+
+        return moduleOutDTOs;
+    }
+
 
 
 

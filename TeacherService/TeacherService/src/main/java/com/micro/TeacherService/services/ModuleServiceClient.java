@@ -12,4 +12,6 @@ public interface ModuleServiceClient {
 
     @GetMapping("/modules/Tcode/{Tcode}")
     List<Module> getModulesByTeacherId(@PathVariable String Tcode);
+    @GetMapping("/modules/cancelAssign/{TCODE}")
+    ResponseEntity<Void> cancelAssign(@PathVariable String TCODE);
 }

@@ -139,6 +139,21 @@ public class ModuleController {
         moduleService.cancelAssign(TCODE);
         return ResponseEntity.noContent().build();
     }
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Get the modules info by the liste of modules Codes"
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "if Any code in the list HAS NO MODULE"
+            )
+    })
+    @PostMapping("/getModulesByCodes")
+    public ResponseEntity<List<ModuleOutDTO>> getModulesByCodes(@RequestBody List<String> moduleCodes) {
+        List<ModuleOutDTO> modules = moduleService.getModulesByCodes(moduleCodes);
+        return ResponseEntity.ok(modules);
+    }
 
 
 

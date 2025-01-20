@@ -1,6 +1,7 @@
 package com.micro.EnrollmentService.services;
 
 import com.micro.EnrollmentService.DTO.EnrollmentDTO;
+import com.micro.EnrollmentService.DTO.ModuleOutDTO;
 import com.micro.EnrollmentService.enteties.Enrollment;
 import com.micro.EnrollmentService.exceptions.notFoundException;
 import com.micro.EnrollmentService.repo.EnrollmentRepository;
@@ -83,6 +84,19 @@ public class EnrollmentService {
         // If student has enrollments, delete them
         if (!enrollments.isEmpty()) {
             enrollmentRepository.deleteAll(enrollments);
+        }
+    }
+    public List<ModuleOutDTO> getModulesForStudent(String studentId) {
+        // Get the list of module codes for the student
+        List<String> moduleCodes = this.getModuleCodesByStudent(studentId);
+
+        // Call the ModuleService to get the module details
+        ResponseEntity<List<ModuleOutDTO>> response = moduleServiceClient.getModulesByCodes(moduleCodes);
+
+        if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
+            return response.getBody();
+        } else {
+            throw new RuntimeException("Failed to fetch module details for student: " + studentId);
         }
     }
 

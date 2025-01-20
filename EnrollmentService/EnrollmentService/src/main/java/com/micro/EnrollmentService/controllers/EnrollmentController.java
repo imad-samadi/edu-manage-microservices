@@ -1,6 +1,7 @@
 package com.micro.EnrollmentService.controllers;
 
 import com.micro.EnrollmentService.DTO.EnrollmentDTO;
+import com.micro.EnrollmentService.DTO.ModuleOutDTO;
 import com.micro.EnrollmentService.enteties.Enrollment;
 import com.micro.EnrollmentService.services.EnrollmentService;
 import lombok.AllArgsConstructor;
@@ -63,4 +64,11 @@ public class EnrollmentController {
         enrollmentService.cancelEnrollmentsForStudent(studentId);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
+
+    @GetMapping("/student/{studentId}/modules")
+    public ResponseEntity<List<ModuleOutDTO>> getModulesForStudent(@PathVariable String studentId) {
+        List<ModuleOutDTO> modules = enrollmentService.getModulesForStudent(studentId);
+        return ResponseEntity.ok(modules);
+    }
+
 }

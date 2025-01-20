@@ -1,13 +1,13 @@
 package com.micro.studentService.services.impl;
 
-import com.micro.studentService.DTO.StudentInDTO;
-import com.micro.studentService.DTO.responseDTO;
-import com.micro.studentService.DTO.studentAuthDTO;
+
+import com.micro.studentService.DTO.*;
 import com.micro.studentService.enteties.Student;
 import com.micro.studentService.exceptions.notFoundException;
 import com.micro.studentService.exceptions.studentExists;
 import com.micro.studentService.repo.studentRepo;
 import com.micro.studentService.services.AuthServiceClient;
+import com.micro.studentService.services.EnrollmentServiceClient;
 import com.micro.studentService.services.IStudentService;
 import com.micro.studentService.services.PasswordGenerator;
 import lombok.AllArgsConstructor;
@@ -21,11 +21,11 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class StudentServiceImpl implements IStudentService {
-
     private studentRepo studentRepository;
 
 
     private AuthServiceClient authServiceClient;
+    private EnrollmentServiceClient enrollmentServiceClient;
 
 
     @Override
@@ -57,7 +57,7 @@ public class StudentServiceImpl implements IStudentService {
 
 
 
-        //Save the student in the Student Service
+
         Student student = new Student();
         student.setFirstName(studentInDTO.getFirstName());
         student.setLastName(studentInDTO.getLastName());
@@ -76,9 +76,28 @@ public class StudentServiceImpl implements IStudentService {
     }
 
     @Override
-    public Student getStudentByMatricule(String matricule) throws notFoundException {
-        return studentRepository.findByMatricule(matricule)
+    public StudentDetailsDTO getStudentByMatricule(String matricule) throws notFoundException {
+        // Fetch the student's basic information
+        Student student = studentRepository.findByMatricule(matricule)
                 .orElseThrow(() -> new notFoundException("Student not found with matricule: " + matricule));
+
+        // Fetch the list of ModuleOutDTO objects for the student
+        ResponseEntity<List<ModuleOutDTO>> modulesResponse = enrollmentServiceClient.getModulesForStudent(matricule);
+        if (!modulesResponse.getStatusCode().is2xxSuccessful() || modulesResponse.getBody() == null) {
+            throw new RuntimeException("Failed to fetch module details for student: " + matricule);
+        }
+        List<ModuleOutDTO> modules = modulesResponse.getBody();
+
+
+
+        // Build the StudentDetailsDTO
+        return StudentDetailsDTO.builder()
+                .firstName(student.getFirstName())
+                .lastName(student.getLastName())
+                .dateOfBirth(student.getDateOfBirth())
+                .matricule(student.getMatricule())
+                .modules(modules)
+                .build();
     }
 
     @Override
@@ -109,14 +128,23 @@ public class StudentServiceImpl implements IStudentService {
 
     @Override
     public void deleteStudent(String matricule) throws notFoundException {
+        // Fetch the student
         Student student = studentRepository.findByMatricule(matricule)
                 .orElseThrow(() -> new notFoundException("Student not found with matricule: " + matricule));
 
-        ResponseEntity<Void> response = authServiceClient.deleteUser(matricule);
-        if (response.getStatusCode() != HttpStatus.CREATED) {
+        // Cancel all enrollments for the student
+        ResponseEntity<Void> cancelResponse = enrollmentServiceClient.cancelEnrollmentsForStudent(matricule);
+        if (!cancelResponse.getStatusCode().is2xxSuccessful()) {
+            throw new RuntimeException("Failed to cancel enrollments for student: " + matricule);
+        }
+
+        // Delete the student from the Auth Service
+        ResponseEntity<Void> authResponse = authServiceClient.deleteUser(matricule);
+        if (authResponse.getStatusCode() != HttpStatus.CREATED) {
             throw new RuntimeException("Failed to delete user in Auth Service");
         }
 
+        // Delete the student from the Student Service
         studentRepository.delete(student);
     }
     @Override
