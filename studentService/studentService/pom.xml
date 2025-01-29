@@ -58,10 +58,7 @@
 		</dependency>
 
 
-		<dependency>
-			<groupId>org.springframework.cloud</groupId>
-			<artifactId>spring-cloud-starter-bus-amqp</artifactId>
-		</dependency>
+
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -127,7 +124,7 @@
 				<version>3.3.2</version>
 				<configuration>
 					<to>
-						<image>imad910/studentservice:v3</image>
+						<image>imad910/studentservice:v44</image>
 					</to>
 				</configuration>
 			</plugin>

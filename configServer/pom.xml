@@ -84,7 +84,7 @@
 				<version>3.3.2</version>
 				<configuration>
 					<to>
-						<image>imad910/configserver:v3</image>
+						<image>imad910/configserver:v44</image>
 					</to>
 				</configuration>
 			</plugin>

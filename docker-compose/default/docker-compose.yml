@@ -1,6 +1,6 @@
 services:
   studentservice:
-    image: "imad910/studentservice:v3"
+    image: "imad910/studentservice:v9"
     container_name: studentservice
     ports:
       - "8080:8080"
@@ -9,7 +9,8 @@ services:
         condition: service_healthy
       eurekaServer:
         condition: service_healthy
-
+      postgres-studentservice:
+        condition: service_healthy
     healthcheck:
       test: "curl --fail --silent localhost:8080/actuator/health/readiness | grep UP || exit 1"
       interval: 10s
@@ -25,38 +26,43 @@ services:
       JAVA_TOOL_OPTIONS: "-javaagent:/app/libs/opentelemetry-javaagent-1.33.5.jar"
       OTEL_EXPORTER_OTLP_ENDPOINT: http://tempo:4317
       OTEL_METRICS_EXPORTER: none
-
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-studentservice:5432/studentdb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: yourpassword
     networks:
       - IMMO
 
 
   teacherservice:
-    image: "imad910/teacherservice:v3"
+    image: "imad910/teacherservice:v9"
     container_name: teacherservice
     ports:
       - "8081:8081"
+    depends_on:
+      configServer:
+        condition: service_healthy
+      eurekaServer:
+        condition: service_healthy
+      postgres-teacherservice:
+        condition: service_healthy
     healthcheck:
       test: "curl --fail --silent localhost:8081/actuator/health/readiness | grep UP || exit 1"
       interval: 10s
       timeout: 5s
       retries: 10
       start_period: 10s
-
     environment:
       SPRING_APPLICATION_NAME: teacherservice
       SPRING_PROFILES_ACTIVE: default
       SPRING_CONFIG_IMPORT: configserver:http://configServer:8071/
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE : http://eurekaServer:8070/eureka/
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaServer:8070/eureka/
       SPRING_RABBITMQ_HOST: "rabbit"
       JAVA_TOOL_OPTIONS: "-javaagent:/app/libs/opentelemetry-javaagent-1.33.5.jar"
       OTEL_EXPORTER_OTLP_ENDPOINT: http://tempo:4317
       OTEL_METRICS_EXPORTER: none
-    depends_on:
-      configServer:
-        condition: service_healthy
-      eurekaServer:
-        condition: service_healthy
-
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-teacherservice:5432/teacherdb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: yourpassword
     networks:
       - IMMO
 
@@ -65,13 +71,19 @@ services:
     container_name: moduleservice
     ports:
       - "8082:8082"
+    depends_on:
+      configServer:
+        condition: service_healthy
+      eurekaServer:
+        condition: service_healthy
+      postgres-moduleservice:
+        condition: service_healthy
     healthcheck:
-      test: "curl --fail --silent localhost:8081/actuator/health/readiness | grep UP || exit 1"
+      test: "curl --fail --silent localhost:8082/actuator/health/readiness | grep UP || exit 1"
       interval: 10s
       timeout: 5s
       retries: 10
       start_period: 10s
-
     environment:
       SPRING_APPLICATION_NAME: moduleservice
       SPRING_PROFILES_ACTIVE: default
@@ -81,12 +93,9 @@ services:
       JAVA_TOOL_OPTIONS: "-javaagent:/app/libs/opentelemetry-javaagent-1.33.5.jar"
       OTEL_EXPORTER_OTLP_ENDPOINT: http://tempo:4317
       OTEL_METRICS_EXPORTER: none
-    depends_on:
-      configServer:
-        condition: service_healthy
-      eurekaServer:
-        condition: service_healthy
-
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-moduleservice:5432/moduledb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: yourpassword
     networks:
       - IMMO
 
@@ -95,15 +104,21 @@ services:
     container_name: enrollservice
     ports:
       - "8083:8083"
+    depends_on:
+      configServer:
+        condition: service_healthy
+      eurekaServer:
+        condition: service_healthy
+      postgres-enrollservice:
+        condition: service_healthy
     healthcheck:
-      test: "curl --fail --silent localhost:8081/actuator/health/readiness | grep UP || exit 1"
+      test: "curl --fail --silent localhost:8083/actuator/health/readiness | grep UP || exit 1"
       interval: 10s
       timeout: 5s
       retries: 10
       start_period: 10s
-
     environment:
-      SPRING_APPLICATION_NAME: enrollservice:v3
+      SPRING_APPLICATION_NAME: enrollservice
       SPRING_PROFILES_ACTIVE: default
       SPRING_CONFIG_IMPORT: configserver:http://configServer:8071/
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaServer:8070/eureka/
@@ -111,12 +126,9 @@ services:
       JAVA_TOOL_OPTIONS: "-javaagent:/app/libs/opentelemetry-javaagent-1.33.5.jar"
       OTEL_EXPORTER_OTLP_ENDPOINT: http://tempo:4317
       OTEL_METRICS_EXPORTER: none
-    depends_on:
-      configServer:
-        condition: service_healthy
-      eurekaServer:
-        condition: service_healthy
-
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-enrollservice:5432/enrolldb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: yourpassword
     networks:
       - IMMO
   authserver:
@@ -124,15 +136,21 @@ services:
     container_name: authserver
     ports:
       - "9000:9000"
+    depends_on:
+      configServer:
+        condition: service_healthy
+      eurekaServer:
+        condition: service_healthy
+      postgres-authservice:
+        condition: service_healthy
     healthcheck:
-      test: "curl --fail --silent localhost:8081/actuator/health/readiness | grep UP || exit 1"
+      test: "curl --fail --silent localhost:9000/actuator/health/readiness | grep UP || exit 1"
       interval: 10s
       timeout: 5s
       retries: 10
       start_period: 10s
-
     environment:
-      SPRING_APPLICATION_NAME: enrollservice:v3
+      SPRING_APPLICATION_NAME: authserver
       SPRING_PROFILES_ACTIVE: default
       SPRING_CONFIG_IMPORT: configserver:http://configServer:8071/
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaServer:8070/eureka/
@@ -140,12 +158,9 @@ services:
       JAVA_TOOL_OPTIONS: "-javaagent:/app/libs/opentelemetry-javaagent-1.33.5.jar"
       OTEL_EXPORTER_OTLP_ENDPOINT: http://tempo:4317
       OTEL_METRICS_EXPORTER: none
-    depends_on:
-      configServer:
-        condition: service_healthy
-      eurekaServer:
-        condition: service_healthy
-
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-authservice:5432/authdb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: yourpassword
     networks:
       - IMMO
 
@@ -205,6 +220,8 @@ services:
       enrollservice:
         condition: service_healthy
       teacherservice:
+        condition: service_healthy
+      authserver:
         condition: service_healthy
 
 
@@ -445,7 +462,90 @@ services:
     networks:
       <<: *loki-dns
 
+  postgres-studentservice:
+    image: postgres:latest
+    container_name: postgres-studentservice
+    environment:
+      POSTGRES_DB: studentdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: yourpassword
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - IMMO
+  postgres-teacherservice:
+    image: postgres:latest
+    container_name: postgres-teacherservice
+    environment:
+      POSTGRES_DB: teacherdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: yourpassword
+    ports:
+      - "5433:5432"
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - IMMO
+  postgres-enrollservice:
+    image: postgres:latest
+    container_name: postgres-enrollservice
+    environment:
+      POSTGRES_DB: enrolldb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: yourpassword
+    ports:
+      - "5434:5432"
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - IMMO
+  postgres-moduleservice:
+    image: postgres:latest
+    container_name: postgres-moduleservice
+    environment:
+      POSTGRES_DB: moduledb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: yourpassword
+    ports:
+      - "5435:5432"
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - IMMO
+  postgres-authservice:
+    image: postgres:latest
+    container_name: postgres-authservice
+    environment:
+      POSTGRES_DB: authdb
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: yourpassword
+    ports:
+      - "5436:5432"
+    healthcheck:
+      test: [ "CMD", "pg_isready", "-U", "postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - IMMO
+
 
 networks:
   IMMO  :
     driver: "bridge"
+
+

@@ -30,8 +30,7 @@ public class GatewayserverApplication {
 								.addResponseHeader("X-Response-Time", LocalDateTime.now().toString())
 
 
-								.requestRateLimiter(config -> config.setRateLimiter(redisRateLimiter())
-										.setKeyResolver(ipKeyResolver()))
+
 
 								.circuitBreaker(config -> config.setName("microtest1CircuitBreaker")
 										.setFallbackUri("forward:/contactSupport")))
@@ -45,32 +44,28 @@ public class GatewayserverApplication {
 									System.out.println("Request received at: " + exchange.getRequest().getPath());
 									return chain.filter(exchange);
 								})
-								.requestRateLimiter(config -> config.setRateLimiter(redisRateLimiter())
-										.setKeyResolver(ipKeyResolver()))
+
 								)
 						.uri("lb://TEACHERSERVICE"))
 
 				.route(p -> p.path("/school/modules/**")
 						.filters(f -> f.rewritePath("/school/modules/(?<segment>.*)", "/modules/${segment}")
 								.addResponseHeader("X-Response-Time", LocalDateTime.now().toString())
-								.requestRateLimiter(config -> config.setRateLimiter(redisRateLimiter())
-										.setKeyResolver(ipKeyResolver()))
+
 								)
 						.uri("lb://MODULESERVICE"))
 
 				.route(p -> p.path("/school/enrollments/**")
 						.filters(f -> f.rewritePath("/school/enrollments/(?<segment>.*)", "/enrollments/${segment}")
 								.addResponseHeader("X-Response-Time", LocalDateTime.now().toString())
-								.requestRateLimiter(config -> config.setRateLimiter(redisRateLimiter())
-										.setKeyResolver(ipKeyResolver()))
+
 								)
 						.uri("lb://ENROLLMENTSERVICE"))
 
 				.route(p -> p.path("/school/auth2/**")
 						.filters(f -> f.rewritePath("/school/auth2/(?<segment>.*)", "/api/${segment}")
 								.addResponseHeader("X-Response-Time", LocalDateTime.now().toString())
-								.requestRateLimiter(config -> config.setRateLimiter(redisRateLimiter())
-										.setKeyResolver(ipKeyResolver()))
+
 						)
 						.uri("lb://AUTHSERVER"))
 
@@ -78,13 +73,13 @@ public class GatewayserverApplication {
 				.build();
 	}
 
-	@Bean
-	public RedisRateLimiter redisRateLimiter() {
+	//@Bean
+	/*public RedisRateLimiter redisRateLimiter() {
 		return new RedisRateLimiter(1, 1, 1);
-	}
+	}*/
 
-	@Bean
-	KeyResolver ipKeyResolver() {
+	//@Bean
+	/*KeyResolver ipKeyResolver() {
 		return exchange -> {
 
 			String ipAddress = exchange.getRequest().getHeaders().getFirst("X-Forwarded-For");
@@ -99,7 +94,7 @@ public class GatewayserverApplication {
 			return Mono.just(ipAddress);
 		};
 
-	}
+	}*/
 	@Bean
 	public HttpClient httpClient() {
 		return HttpClient.create()

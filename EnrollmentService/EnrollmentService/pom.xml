@@ -129,7 +129,7 @@
 				<version>3.3.2</version>
 				<configuration>
 					<to>
-						<image>imad910/enrollservice:v3</image>
+						<image>imad910/enrollservice:v44</image>
 					</to>
 				</configuration>
 			</plugin>

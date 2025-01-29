@@ -131,7 +131,7 @@
 				<version>3.3.2</version>
 				<configuration>
 					<to>
-						<image>imad910/moduleservice:v3</image>
+						<image>imad910/moduleservice:v44</image>
 					</to>
 				</configuration>
 			</plugin>
