@@ -30,7 +30,7 @@ public class UserDTO {
     private String email ;
 
     @NotEmpty(message = "userName can not be a null or empty")
-    @Size(min = 5, max = 30, message = "The length of the customer name should be between 5 and 30")
+    @Size(min = 3, max = 30, message = "The length of the customer name should be between 5 and 30")
     @Schema(
             description = "UserName of the user", example = "imad"
     )

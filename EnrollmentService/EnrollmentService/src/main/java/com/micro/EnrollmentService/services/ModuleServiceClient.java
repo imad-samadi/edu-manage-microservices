@@ -12,7 +12,7 @@ import java.util.List;
 
 @FeignClient(name = "MODULESERVICE")
 public interface ModuleServiceClient {
-    @GetMapping("/modules//ModuleExists/{moduleCode}")
+    @GetMapping("/modules/ModuleExists/{moduleCode}")
     ResponseEntity<Void> checkModuleExistence(@PathVariable String moduleCode);
 
     @PostMapping("/modules/getModulesByCodes")

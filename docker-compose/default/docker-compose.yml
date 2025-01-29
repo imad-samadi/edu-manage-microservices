@@ -1,7 +1,7 @@
 services:
-  microtest1:
-    image: "imad910/microtest1:v11"
-    container_name: microtest-ms
+  studentservice:
+    image: "imad910/studentservice:v3"
+    container_name: studentservice
     ports:
       - "8080:8080"
     depends_on:
@@ -17,19 +17,22 @@ services:
       retries: 10
       start_period: 10s
     environment:
-      SPRING_APPLICATION_NAME: microtest1
+      SPRING_APPLICATION_NAME: studentservice
       SPRING_PROFILES_ACTIVE: default
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaServer:8070/eureka/
       SPRING_CONFIG_IMPORT: configserver:http://configServer:8071/
       SPRING_RABBITMQ_HOST: "rabbit"
+      JAVA_TOOL_OPTIONS: "-javaagent:/app/libs/opentelemetry-javaagent-1.33.5.jar"
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://tempo:4317
+      OTEL_METRICS_EXPORTER: none
 
     networks:
       - IMMO
 
 
-  microtest2:
-    image: "imad910/microtest2:v11"
-    container_name: microtest2-ms
+  teacherservice:
+    image: "imad910/teacherservice:v3"
+    container_name: teacherservice
     ports:
       - "8081:8081"
     healthcheck:
@@ -40,11 +43,103 @@ services:
       start_period: 10s
 
     environment:
-      SPRING_APPLICATION_NAME: microtest2
+      SPRING_APPLICATION_NAME: teacherservice
       SPRING_PROFILES_ACTIVE: default
       SPRING_CONFIG_IMPORT: configserver:http://configServer:8071/
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE : http://eurekaServer:8070/eureka/
       SPRING_RABBITMQ_HOST: "rabbit"
+      JAVA_TOOL_OPTIONS: "-javaagent:/app/libs/opentelemetry-javaagent-1.33.5.jar"
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://tempo:4317
+      OTEL_METRICS_EXPORTER: none
+    depends_on:
+      configServer:
+        condition: service_healthy
+      eurekaServer:
+        condition: service_healthy
+
+    networks:
+      - IMMO
+
+  moduleservice:
+    image: "imad910/moduleservice:v3"
+    container_name: moduleservice
+    ports:
+      - "8082:8082"
+    healthcheck:
+      test: "curl --fail --silent localhost:8081/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+    environment:
+      SPRING_APPLICATION_NAME: moduleservice
+      SPRING_PROFILES_ACTIVE: default
+      SPRING_CONFIG_IMPORT: configserver:http://configServer:8071/
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaServer:8070/eureka/
+      SPRING_RABBITMQ_HOST: "rabbit"
+      JAVA_TOOL_OPTIONS: "-javaagent:/app/libs/opentelemetry-javaagent-1.33.5.jar"
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://tempo:4317
+      OTEL_METRICS_EXPORTER: none
+    depends_on:
+      configServer:
+        condition: service_healthy
+      eurekaServer:
+        condition: service_healthy
+
+    networks:
+      - IMMO
+
+  enrollservice:
+    image: "imad910/enrollservice:v3"
+    container_name: enrollservice
+    ports:
+      - "8083:8083"
+    healthcheck:
+      test: "curl --fail --silent localhost:8081/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+    environment:
+      SPRING_APPLICATION_NAME: enrollservice:v3
+      SPRING_PROFILES_ACTIVE: default
+      SPRING_CONFIG_IMPORT: configserver:http://configServer:8071/
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaServer:8070/eureka/
+      SPRING_RABBITMQ_HOST: "rabbit"
+      JAVA_TOOL_OPTIONS: "-javaagent:/app/libs/opentelemetry-javaagent-1.33.5.jar"
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://tempo:4317
+      OTEL_METRICS_EXPORTER: none
+    depends_on:
+      configServer:
+        condition: service_healthy
+      eurekaServer:
+        condition: service_healthy
+
+    networks:
+      - IMMO
+  authserver:
+    image: "imad910/authserver:v3"
+    container_name: authserver
+    ports:
+      - "9000:9000"
+    healthcheck:
+      test: "curl --fail --silent localhost:8081/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+    environment:
+      SPRING_APPLICATION_NAME: enrollservice:v3
+      SPRING_PROFILES_ACTIVE: default
+      SPRING_CONFIG_IMPORT: configserver:http://configServer:8071/
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eurekaServer:8070/eureka/
+      SPRING_RABBITMQ_HOST: "rabbit"
+      JAVA_TOOL_OPTIONS: "-javaagent:/app/libs/opentelemetry-javaagent-1.33.5.jar"
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://tempo:4317
+      OTEL_METRICS_EXPORTER: none
     depends_on:
       configServer:
         condition: service_healthy
@@ -55,7 +150,7 @@ services:
       - IMMO
 
   configServer:
-    image: "imad910/configserver:v11"
+    image: "imad910/configserver:v3"
     container_name: configServer-ms
     ports:
       - "8071:8071"
@@ -68,10 +163,14 @@ services:
       start_period: 10s
     networks:
       - IMMO
+    environment:
+      JAVA_TOOL_OPTIONS: "-javaagent:/app/libs/opentelemetry-javaagent-1.33.5.jar"
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://tempo:4317
+      OTEL_METRICS_EXPORTER: none
 
 
   eurekaServer:
-    image: "imad910/eurekaserver:v11"
+    image: "imad910/eurekaserver:v3"
     container_name: eurekaserver-ms
     ports:
       - "8070:8070"
@@ -87,18 +186,25 @@ services:
       start_period: 10s
     environment:
       SPRING_CONFIG_IMPORT: configserver:http://configServer:8071/
+      JAVA_TOOL_OPTIONS: "-javaagent:/app/libs/opentelemetry-javaagent-1.33.5.jar"
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://tempo:4317
+      OTEL_METRICS_EXPORTER: none
     networks:
       - IMMO
 
   gatewayserver:
-    image: "imad910/gatewayserver:v11"
+    image: "imad910/gatewayserver:v3"
     container_name: gatewayserver-ms
     ports:
       - "8072:8072"
     depends_on:
-      microtest1:
+      studentservice:
         condition: service_healthy
-      microtest2:
+      moduleservice:
+        condition: service_healthy
+      enrollservice:
+        condition: service_healthy
+      teacherservice:
         condition: service_healthy
 
 
@@ -106,18 +212,238 @@ services:
       SPRING_APPLICATION_NAME: "gatewayserver"
       SPRING_CONFIG_IMPORT: configserver:http://configServer:8071/
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE : http://eurekaServer:8070/eureka/
-
+      SPRING_DATA_REDIS_CONNECT-TIMEOUT: 2s
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PORT: 6379
+      SPRING_DATA_REDIS_TIMEOUT: 1s
+      JAVA_TOOL_OPTIONS: "-javaagent:/app/libs/opentelemetry-javaagent-1.33.5.jar"
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://tempo:4317
+      OTEL_METRICS_EXPORTER: none
 
     networks:
       - IMMO
 
 
+  read:
+    image: grafana/loki:3.0.0
+    command: "-config.file=/etc/loki/config.yaml -target=read"
+    ports:
+      - 3101:3100
+      - 7946
+      - 9095
+    volumes:
+      - ../observability/loki/loki-config.yaml:/etc/loki/config.yaml
+    depends_on:
+      - minio
+    healthcheck:
+      test: [ "CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3100/ready || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks: &loki-dns
+      IMMO:
+        aliases:
+          - loki
+
+  alloy:
+    image: grafana/alloy:v1.0.0
+    volumes:
+      - ../observability/alloy/alloy-local-config.yaml:/etc/alloy/config.alloy:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: run --server.http.listen-addr=0.0.0.0:12345 --storage.path=/var/lib/alloy/data /etc/alloy/config.alloy
+    ports:
+      - 12345:12345
+    depends_on:
+      - gateway
+    networks: &loki-dns
+      IMMO:
+        aliases:
+          - loki
+
+  minio:
+    image: minio/minio:RELEASE.2024-05-27T19-17-46Z
+    entrypoint:
+      - sh
+      - -euc
+      - |
+        mkdir -p /data/loki-data && \
+        mkdir -p /data/loki-ruler && \
+        minio server /data
+    environment:
+      - MINIO_ROOT_USER=loki
+      - MINIO_ROOT_PASSWORD=supersecret
+      - MINIO_PROMETHEUS_AUTH_TYPE=public
+      - MINIO_UPDATE=off
+    ports:
+      - 9000
+    volumes:
+      - ./.data/minio:/data
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:9000/minio/health/live" ]
+      interval: 15s
+      timeout: 20s
+      retries: 5
+    networks: &loki-dns
+      IMMO:
+        aliases:
+          - loki
+
+  prometheus:
+    image: prom/prometheus:v2.50.1
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ../observability/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    networks:
+      - IMMO
+
+  tempo:
+    image: grafana/tempo:2.4.2
+    container_name: tempo
+    command: -config.file /etc/tempo-config.yml
+    ports:
+      - "3110:3100"
+      - "4317:4317"
+    volumes:
+      - ../observability/tempo/tempo.yml:/etc/tempo-config.yml
+    networks: &loki-dns
+      IMMO:
+        aliases:
+          - loki
+
+  grafana:
+    image: grafana/grafana:11.0.0
+    environment:
+      - GF_PATHS_PROVISIONING=/etc/grafana/provisioning
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+    depends_on:
+      - gateway
+    entrypoint:
+      - sh
+      - -euc
+      - |
+        /run.sh
+    ports:
+      - "3000:3000"
+    volumes:
+      - ../observability/grafana/datasource.yml:/etc/grafana/provisioning/datasources/datasource.yml
+    healthcheck:
+      test: [ "CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3000/api/health || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks: &loki-dns
+      IMMO:
+        aliases:
+          - loki
+
+  backend:
+    image: grafana/loki:3.0.0
+    volumes:
+      - ../observability/loki/loki-config.yaml:/etc/loki/config.yaml
+    ports:
+      - "3100"
+      - "7946"
+    command: "-config.file=/etc/loki/config.yaml -target=backend -legacy-read-mode=false"
+    depends_on:
+      - gateway
+    networks: &loki-dns
+      IMMO:
+        aliases:
+          - loki
+
+  gateway:
+    image: nginx:1.25.5
+    depends_on:
+      - read
+      - write
+    entrypoint:
+      - sh
+      - -euc
+      - |
+        cat <<EOF > /etc/nginx/nginx.conf
+        user  nginx;
+        worker_processes  5;  ## Default: 1
+        
+        events {
+          worker_connections   1000;
+        }
+        
+        http {
+          resolver 127.0.0.11;
+        
+          server {
+            listen             3100;
+        
+            location = / {
+              return 200 'OK';
+              auth_basic off;
+            }
+        
+            location = /api/prom/push {
+              proxy_pass       http://write:3100\$$request_uri;
+            }
+        
+            location = /api/prom/tail {
+              proxy_pass       http://read:3100\$$request_uri;
+              proxy_set_header Upgrade \$$http_upgrade;
+              proxy_set_header Connection "upgrade";
+            }
+        
+            location ~ /api/prom/.* {
+              proxy_pass       http://read:3100\$$request_uri;
+            }
+        
+            location = /loki/api/v1/push {
+              proxy_pass       http://write:3100\$$request_uri;
+            }
+        
+            location = /loki/api/v1/tail {
+              proxy_pass       http://read:3100\$$request_uri;
+              proxy_set_header Upgrade \$$http_upgrade;
+              proxy_set_header Connection "upgrade";
+            }
+        
+            location ~ /loki/api/.* {
+              proxy_pass       http://read:3100\$$request_uri;
+            }
+          }
+        }
+        EOF
+        /docker-entrypoint.sh nginx -g "daemon off;"
+    ports:
+      - "3100:3100"
+    healthcheck:
+      test: [ "CMD", "service", "nginx", "status" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks: &loki-dns
+      IMMO:
+        aliases:
+          - loki
 
 
-
-
-
-
+  write:
+    image: grafana/loki:3.0.0
+    command: "-config.file=/etc/loki/config.yaml -target=write"
+    ports:
+      - 3102:3100
+      - 7946
+      - 9095
+    volumes:
+      - ../observability/loki/loki-config.yaml:/etc/loki/config.yaml
+    healthcheck:
+      test: [ "CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:3100/ready || exit 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    depends_on:
+      - minio
+    networks:
+      <<: *loki-dns
 
 
 networks:

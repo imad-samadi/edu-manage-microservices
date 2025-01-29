@@ -43,14 +43,14 @@ public class StudentController {
                     description = "HTTP Status Internal Server Error"
             )
     })
-    @PostMapping
+    @PostMapping("/add")
     public ResponseEntity<Student> addStudent(@Valid @RequestBody StudentInDTO studentInDTO)  {
         Student student = studentService.addStudent(studentInDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(student);
     }
 
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<Student>> getAllStudents() {
         List<Student> students = studentService.getAllStudents();
         return ResponseEntity.ok(students);

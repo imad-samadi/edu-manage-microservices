@@ -19,7 +19,7 @@ public class EnrollmentController {
     private final EnrollmentService enrollmentService;
 
 
-    @PostMapping
+    @PostMapping("/add")
     public ResponseEntity<EnrollmentDTO> addEnrollment(@RequestBody EnrollmentDTO enrollmentDTO) {
         Enrollment enrollment = enrollmentService.addEnrollment(enrollmentDTO);
         EnrollmentDTO responseDTO = EnrollmentDTO.builder()
@@ -31,7 +31,7 @@ public class EnrollmentController {
     }
 
     // Endpoint to get all enrollments
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<EnrollmentDTO>> getAllEnrollments() {
         List<EnrollmentDTO> enrollmentDTOs = enrollmentService.getAllEnrollments();
         return ResponseEntity.ok(enrollmentDTOs);

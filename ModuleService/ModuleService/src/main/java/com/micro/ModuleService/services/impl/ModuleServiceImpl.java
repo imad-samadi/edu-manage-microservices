@@ -54,7 +54,10 @@ public class ModuleServiceImpl  {
 public ModuleOutDTO getModuleByCode(String Code) {
     Module module = moduleRepository.findByCode(Code)
             .orElseThrow(() -> new notFoundException("Module not found with ID: " + Code));
-    Teacher t = this.getTeacherByTCode(module.getTeacherId());
+    Teacher t = null  ;
+    if(module.getTeacherId()!=null  && !module.getTeacherId().isEmpty()){
+        t = this.getTeacherByTCode(module.getTeacherId());
+    }
 
     return ModuleOutDTO.builder()
             .code(module.getCode())
@@ -82,9 +85,10 @@ public ModuleOutDTO getModuleByCode(String Code) {
 
 
         return modules.stream().map(module -> {
-
-            Teacher teacher = this.getTeacherByTCode(module.getTeacherId());
-
+            Teacher teacher  = null ;
+            if(module.getTeacherId()!=null){
+                teacher = this.getTeacherByTCode(module.getTeacherId());
+            }
 
             return ModuleOutDTO.builder()
                     .code(module.getCode())

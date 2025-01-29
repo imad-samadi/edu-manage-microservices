@@ -2,6 +2,7 @@ package com.imad.springAuthServer.controllers;
 
 import com.imad.springAuthServer.DTO.UserDTO;
 import com.imad.springAuthServer.DTO.responseDTO;
+import com.imad.springAuthServer.service.EmailService;
 import com.imad.springAuthServer.service.impl.userService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -10,6 +11,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.MailException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +31,7 @@ public class AddClientConroller {
     private authServerInfo authServerInfo ;
     private PasswordEncoder passwordEncoder  ;
     private userService  userService ;
+    private final EmailService emailService;
 
 
     @Operation(
@@ -47,17 +50,27 @@ public class AddClientConroller {
     })
     @PostMapping("/user/add")
     public ResponseEntity<responseDTO> addUser(@Valid @RequestBody UserDTO userDTO ) {
-
+        String pass = userDTO.getPassword();
         userDTO.setPassword(this.passwordEncoder.encode(userDTO.getPassword()));
+
+        // Add the user
         this.userService.addUser(userDTO);
 
-        return  ResponseEntity.status(201)
+        // Send an email with credentials
+        try {
+            emailService.sendCredentialsEmail(userDTO.getEmail(), userDTO.getUserName(), pass);
+        } catch (MailException e) {
+            // Log the error and continue
+            System.err.println("Failed to send email: " + e.getMessage());
+        }
+
+        return ResponseEntity.status(201)
                 .body(
                         responseDTO.builder()
                                 .statusCode("201")
                                 .statusMsg("User created")
                                 .build()
-                ) ;
+                );
 
 
     }

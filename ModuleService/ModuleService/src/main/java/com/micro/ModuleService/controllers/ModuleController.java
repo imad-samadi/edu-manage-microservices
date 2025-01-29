@@ -37,7 +37,7 @@ public class ModuleController {
                     description = "IF THE MODULE CODE ALREDY EXISTS"
             )
     })
-    @PostMapping
+    @PostMapping("/add")
     public ResponseEntity<Module> addModule(@Valid @RequestBody ModuleDTO moduleInDTO) {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(this.moduleService.addModule(moduleInDTO));
@@ -73,7 +73,7 @@ public class ModuleController {
                     description = "HTTP Status Internal Server Error"
             )
     })
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<ModuleOutDTO>> getAllModules() {
         List<ModuleOutDTO> modules = moduleService.getAllModules();
         return ResponseEntity.ok(modules);

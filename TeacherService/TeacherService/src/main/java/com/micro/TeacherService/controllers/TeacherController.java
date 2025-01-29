@@ -39,7 +39,7 @@ public class TeacherController {
                     description = "HTTP Status Internal Server Error"
             )
     })
-    @PostMapping
+    @PostMapping("/add")
     public ResponseEntity<Teacher> addTeacher(@Valid @RequestBody TeacherInDTO teacherInDTO) {
         Teacher teacher = teacherService.addTeacher(teacherInDTO);
         return ResponseEntity.status(HttpStatus.CREATED).body(teacher);
@@ -61,13 +61,14 @@ public class TeacherController {
     })
     @GetMapping("/{TCode}")
     public ResponseEntity<TeacherOutDTO> getTeacherByTCode(@PathVariable String TCode) throws notFoundException {
+
         TeacherOutDTO teacher = teacherService.getTeacherWithModules(TCode);
         return ResponseEntity.status(HttpStatus.OK).body(teacher);
     }
 
 
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<TeacherOutDTO>> getAllTeachers() {
         List<TeacherOutDTO> teachers = teacherService.getAllTeachers();
         return ResponseEntity.ok(teachers);

@@ -32,6 +32,9 @@ management:
     enabled: true
     readiness-state:
       enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
 
 endpoints :
   shutdown :
@@ -45,3 +48,6 @@ resilience4j.circuitbreaker:
       permittedNumberOfCallsInHalfOpenState: 2
       failureRateThreshold: 50
       waitDurationInOpenState: 10000
+logging:
+  pattern:
+    level: "%5p [${spring.application.name},%X{trace_id},%X{span_id}]"

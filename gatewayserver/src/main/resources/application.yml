@@ -32,11 +32,26 @@ management:
       exposure:
         include: "*"
   endpoint:
-    gateway :
+    shutdown:
       enabled: true
+    health:
+      probes:
+        enabled: true
   info:
     env:
       enabled: true
+  health:
+    liveness-state:
+    enabled: true
+    readiness-state:
+      enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+
+endpoints :
+  shutdown :
+    enabled : true
 
 
 
@@ -54,4 +69,6 @@ resilience4j.circuitbreaker:
       failureRateThreshold: 50 #if 50% of the request is failling move to closed
       waitDurationInOpenState: 10000 #This setting specifies how long, in milliseconds, the Circuit Breaker will remain in the open state before transitioning to the half-open state to test the service.
 
-
+logging:
+  pattern:
+    level: "%5p [${spring.application.name},%X{trace_id},%X{span_id}]"

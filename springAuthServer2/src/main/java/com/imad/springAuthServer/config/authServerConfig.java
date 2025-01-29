@@ -79,21 +79,24 @@ public class authServerConfig {
             throws Exception {
         http
                 .authorizeHttpRequests((authorize) -> authorize
-
-                       /* .requestMatchers("/swagger-ui/**").permitAll()
-                        .requestMatchers("/api/GETApiContact").permitAll()
-                        .requestMatchers("/actuator/**").permitAll()*/
-
                         .anyRequest().permitAll()
-                ) ;
-        http.formLogin(Customizer.withDefaults()) ;
-        http.httpBasic(Customizer.withDefaults()) ;
+                )
+                .formLogin(login -> login
+                        .loginPage("/login") // Custom login page
+                        .permitAll()
+                )
+                .logout(logout -> logout
+                        .logoutUrl("/logout")
+                        .logoutSuccessUrl("/login?logout")
+                        .permitAll()
+                )
+                .httpBasic(Customizer.withDefaults());
 
-
-        http.csrf((cr)->cr.disable());
+        http.csrf(csrf -> csrf.disable());
 
         return http.build();
     }
+
 
 
 
