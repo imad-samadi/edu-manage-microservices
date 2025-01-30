@@ -10,14 +10,15 @@ spring:
           enabled : false
           lowerCaseServiceId: true
       httpclient:
-        connect-timeout: 1000
-        response-timeout: 2s
+        connect-timeout: 20000
+        response-timeout: 20s
   data:
     redis:
       connect-timeout: 2s
       host: localhost
       port: 6379
       timeout: 1s
+
 
 
   security:
@@ -61,13 +62,7 @@ info:
     description: "gatewayserver of bank app "
     version : "1.0.0"
 
-resilience4j.circuitbreaker:
-  configs:
-    default:
-      slidingWindowSize: 10 #monitor 10 requests and then take the decision whether to continue in close or move to open
-      permittedNumberOfCallsInHalfOpenState: 2 #when we r in half-open how many requests will be pass and based upon this 2 requests it will decide to go to close or open again
-      failureRateThreshold: 50 #if 50% of the request is failling move to closed
-      waitDurationInOpenState: 10000 #This setting specifies how long, in milliseconds, the Circuit Breaker will remain in the open state before transitioning to the half-open state to test the service.
+
 
 logging:
   pattern:

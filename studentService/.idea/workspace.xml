@@ -4,51 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f8c6cd73-0255-4df7-be26-eddf2c797f34" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/../.idea/microV4 -ServiceDiscovery - Copy.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../EnrollmentService/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../EnrollmentService/.idea/EnrollmentService.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../EnrollmentService/.idea/compiler.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../EnrollmentService/.idea/dataSources.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../EnrollmentService/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../EnrollmentService/.idea/jarRepositories.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../EnrollmentService/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../EnrollmentService/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../EnrollmentService/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../EnrollmentService/EnrollmentService/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../EnrollmentService/EnrollmentService/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ModuleService/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ModuleService/.idea/ModuleService.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ModuleService/.idea/compiler.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ModuleService/.idea/dataSources.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ModuleService/.idea/encodings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ModuleService/.idea/jarRepositories.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ModuleService/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ModuleService/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ModuleService/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../ModuleService/ModuleService/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../ModuleService/ModuleService/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../TeacherService/TeacherService/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../TeacherService/TeacherService/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../configServer/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../configServer/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../docker-compose/default/.data/minio/.minio.sys/buckets/.bloomcycle.bin/xl.meta" beforeDir="false" afterPath="$PROJECT_DIR$/../docker-compose/default/.data/minio/.minio.sys/buckets/.bloomcycle.bin/xl.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../docker-compose/default/.data/minio/.minio.sys/buckets/.usage-cache.bin.bkp/xl.meta" beforeDir="false" afterPath="$PROJECT_DIR$/../docker-compose/default/.data/minio/.minio.sys/buckets/.usage-cache.bin.bkp/xl.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../docker-compose/default/.data/minio/.minio.sys/buckets/.usage-cache.bin/xl.meta" beforeDir="false" afterPath="$PROJECT_DIR$/../docker-compose/default/.data/minio/.minio.sys/buckets/.usage-cache.bin/xl.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../docker-compose/default/.data/minio/.minio.sys/buckets/.usage.json/xl.meta" beforeDir="false" afterPath="$PROJECT_DIR$/../docker-compose/default/.data/minio/.minio.sys/buckets/.usage.json/xl.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../docker-compose/default/.data/minio/.minio.sys/buckets/loki-data/.usage-cache.bin.bkp/xl.meta" beforeDir="false" afterPath="$PROJECT_DIR$/../docker-compose/default/.data/minio/.minio.sys/buckets/loki-data/.usage-cache.bin.bkp/xl.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../docker-compose/default/.data/minio/.minio.sys/buckets/loki-data/.usage-cache.bin/xl.meta" beforeDir="false" afterPath="$PROJECT_DIR$/../docker-compose/default/.data/minio/.minio.sys/buckets/loki-data/.usage-cache.bin/xl.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../docker-compose/default/.data/minio/.minio.sys/buckets/loki-ruler/.usage-cache.bin.bkp/xl.meta" beforeDir="false" afterPath="$PROJECT_DIR$/../docker-compose/default/.data/minio/.minio.sys/buckets/loki-ruler/.usage-cache.bin.bkp/xl.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../docker-compose/default/.data/minio/.minio.sys/buckets/loki-ruler/.usage-cache.bin/xl.meta" beforeDir="false" afterPath="$PROJECT_DIR$/../docker-compose/default/.data/minio/.minio.sys/buckets/loki-ruler/.usage-cache.bin/xl.meta" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../docker-compose/default/.data/minio/.minio.sys/tmp/5bf25d18-37fa-453b-a0b2-2de793a1004f" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../docker-compose/default/.data/minio/loki-data/index/index_20042/1731703544-c03c3a5b9992-1731699464941326348.tsdb.gz/xl.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../docker-compose/default/.data/minio/loki-data/index/index_20042/1731704444-c03c3a5b9992-1731699464941326348.tsdb.gz/xl.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../docker-compose/default/.data/minio/loki-data/index/index_20042/tenant1/1731703672190172553-compactor-1731615493809-1731702897334-356bf8b3.tsdb.gz/xl.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../docker-compose/default/.data/minio/loki-data/index/index_20043/1731704444-c03c3a5b9992-1731699464941326348.tsdb.gz/xl.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../docker-compose/default/.data/minio/loki-data/index/index_20044/1731704444-c03c3a5b9992-1731699464941326348.tsdb.gz/xl.meta" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/../docker-compose/default/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/../docker-compose/default/docker-compose.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../eurekaserver/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../eurekaserver/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../gatewayserver/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../gatewayserver/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../gatewayserver/src/main/java/com/micro/gatewayserver/GatewayserverApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/../gatewayserver/src/main/java/com/micro/gatewayserver/GatewayserverApplication.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../springAuthServer2/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../springAuthServer2/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/studentService/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/studentService/pom.xml" afterDir="false" />
-    </list>
+    <list default="true" id="f8c6cd73-0255-4df7-be26-eddf2c797f34" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -139,7 +95,7 @@
       <updated>1737324910926</updated>
       <workItem from="1737324911572" duration="4506000" />
       <workItem from="1738061142561" duration="11751000" />
-      <workItem from="1738156647364" duration="560000" />
+      <workItem from="1738156647364" duration="670000" />
     </task>
     <servers />
   </component>

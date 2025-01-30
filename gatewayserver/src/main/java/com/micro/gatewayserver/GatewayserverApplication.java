@@ -28,12 +28,7 @@ public class GatewayserverApplication {
 				.route(p -> p.path("/school/students/**")
 						.filters(f -> f.rewritePath("/school/students/(?<segment>.*)", "/students/${segment}")
 								.addResponseHeader("X-Response-Time", LocalDateTime.now().toString())
-
-
-
-
-								.circuitBreaker(config -> config.setName("microtest1CircuitBreaker")
-										.setFallbackUri("forward:/contactSupport")))
+						)
 								.uri("lb://STUDENTSERVICE"))
 
 				.route(p -> p.path("/school/teachers/**")

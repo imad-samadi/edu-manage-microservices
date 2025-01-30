@@ -124,7 +124,7 @@
 				<version>3.3.2</version>
 				<configuration>
 					<to>
-						<image>imad910/studentservice:v44</image>
+						<image>imad910/studentservice:v88</image>
 					</to>
 				</configuration>
 			</plugin>

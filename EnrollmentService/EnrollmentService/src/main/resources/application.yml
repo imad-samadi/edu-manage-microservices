@@ -1,4 +1,5 @@
 spring:
+
   application:
     name: "enrollmentService"
   profiles:
@@ -6,12 +7,33 @@ spring:
   config:
     import: "optional:configserver:http://localhost:8071/"
 
+  datasource:
+    url: jdbc:postgresql://localhost:5433/enrollmentService
+    username: postgres
+    password: admin
+    driver-class-name: org.postgresql.Driver
+    jpa:
+      hibernate:
+        ddl-auto: update
+      show-sql: true
+      properties:
+        hibernate:
+          format_sql: true
+      database: postgresql
+      database-platform: org.hibernate.dialect.PostgreSQLDialect
+    main:
+      banner-mode: off
 
-  rabbitmq:
-    host: "localhost"
-    port: 5672
-    username: "guest"
-    password: "guest"
+
+
+eureka :
+  instance:
+    prefer-ip-address: true
+  client :
+    fetchRegistry: true
+    registerWithEureka: true
+    serviceUrl:
+      defaultZone: http://localhost:8070/eureka/
 
 management:
   endpoints:

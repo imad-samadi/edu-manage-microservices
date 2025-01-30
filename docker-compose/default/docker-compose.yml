@@ -1,6 +1,6 @@
 services:
   studentservice:
-    image: "imad910/studentservice:v9"
+    image: "imad910/studentservice:v88"
     container_name: studentservice
     ports:
       - "8080:8080"
@@ -27,14 +27,16 @@ services:
       OTEL_EXPORTER_OTLP_ENDPOINT: http://tempo:4317
       OTEL_METRICS_EXPORTER: none
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-studentservice:5432/studentdb
+      SPRING_JPA_HIBERNATE_DDL_AUTO : update
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: yourpassword
+
     networks:
       - IMMO
 
 
   teacherservice:
-    image: "imad910/teacherservice:v9"
+    image: "imad910/teacherservice:v88"
     container_name: teacherservice
     ports:
       - "8081:8081"
@@ -63,11 +65,12 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-teacherservice:5432/teacherdb
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: yourpassword
+      SPRING_JPA_HIBERNATE_DDL_AUTO : update
     networks:
       - IMMO
 
   moduleservice:
-    image: "imad910/moduleservice:v3"
+    image: "imad910/moduleservice:v88"
     container_name: moduleservice
     ports:
       - "8082:8082"
@@ -96,11 +99,12 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-moduleservice:5432/moduledb
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: yourpassword
+      SPRING_JPA_HIBERNATE_DDL_AUTO : update
     networks:
       - IMMO
 
   enrollservice:
-    image: "imad910/enrollservice:v3"
+    image: "imad910/enrollservice:v88"
     container_name: enrollservice
     ports:
       - "8083:8083"
@@ -129,10 +133,11 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-enrollservice:5432/enrolldb
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: yourpassword
+      SPRING_JPA_HIBERNATE_DDL_AUTO : update
     networks:
       - IMMO
   authserver:
-    image: "imad910/authserver:v3"
+    image: "imad910/authserver:v88"
     container_name: authserver
     ports:
       - "9000:9000"
@@ -161,12 +166,13 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-authservice:5432/authdb
       SPRING_DATASOURCE_USERNAME: postgres
       SPRING_DATASOURCE_PASSWORD: yourpassword
+      SPRING_JPA_HIBERNATE_DDL_AUTO : update
     networks:
       - IMMO
 
   configServer:
-    image: "imad910/configserver:v3"
-    container_name: configServer-ms
+    image: "imad910/configserver:v44"
+    container_name: configServer
     ports:
       - "8071:8071"
 
@@ -185,8 +191,8 @@ services:
 
 
   eurekaServer:
-    image: "imad910/eurekaserver:v3"
-    container_name: eurekaserver-ms
+    image: "imad910/eurekaserver:v44"
+    container_name: eurekaServer
     ports:
       - "8070:8070"
     depends_on:
@@ -208,8 +214,8 @@ services:
       - IMMO
 
   gatewayserver:
-    image: "imad910/gatewayserver:v3"
-    container_name: gatewayserver-ms
+    image: "imad910/gatewayserver:v88"
+    container_name: gatewayserver
     ports:
       - "8072:8072"
     depends_on:
@@ -510,6 +516,7 @@ services:
       retries: 5
     networks:
       - IMMO
+
   postgres-moduleservice:
     image: postgres:latest
     container_name: postgres-moduleservice

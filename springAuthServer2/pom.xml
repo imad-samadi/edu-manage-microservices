@@ -84,6 +84,7 @@
 			<groupId>org.springframework.cloud</groupId>
 			<artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
 		</dependency>
+
 		<dependency>
 			<groupId>io.opentelemetry.javaagent</groupId>
 			<artifactId>opentelemetry-javaagent</artifactId>
@@ -130,7 +131,7 @@
 				<version>3.3.2</version>
 				<configuration>
 					<to>
-						<image>imad910/authserver:v44</image>
+						<image>imad910/authserver:v88</image>
 					</to>
 				</configuration>
 			</plugin>
